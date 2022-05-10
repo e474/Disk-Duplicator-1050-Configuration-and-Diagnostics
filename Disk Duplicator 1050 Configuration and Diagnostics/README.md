@@ -1,16 +1,7 @@
-Disk Duplicator 1050 Firmware sources
-=====================================
+Disk Duplicator 1050 Configuration and Diagnostics
+==================================================
 
-The Disk Duplicator 1050 is a hardware upgrade for an Atari 1050 disk drive. This repository contains the ATASM 6502 Assembly Language sources, and related files.
-
-
-
-
-
-
-
-
-
+The Disk Duplicator 1050 is a hardware upgrade for an Atari 1050 disk drive. This repository contains the ATASM 6502 Assembly Language sources for (a set) of utility programs.
 
 
 
