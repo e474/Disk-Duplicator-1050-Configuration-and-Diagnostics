@@ -35,13 +35,16 @@ MAIN_MENU_TEXT
 	.BYTE "2) Upload and call coldstart routine.",EOL
 	.BYTE "3) Turn on track buffering.",EOL
 	.BYTE "4) Turn off track buffering.",EOL
-	.BYTE "5) Select a different drive.",EOL
+	.BYTE "5) Call success code.",EOL
+	.BYTE "6) Call failure code.",EOL
+	.BYTE "7) Step +5 tracks.",EOL
+	.BYTE "8) Select a different drive.",EOL
 
-    .BYTE "Choose (1 - 5): "
+    .BYTE "Choose (1 - 8): "
 MAIN_MENU_TEXT_LENGTH = * - MAIN_MENU_TEXT
 
 BAD_MENU_NUMBER_TEXT
-	.BYTE 	EOL,EOL,"* Error: Drive number not between 1 and 4", EOL		; inform user
+	.BYTE 	EOL,EOL,"* Error: Drive number not between 1 and 8", EOL		; inform user
 BAD_MENU_NUMBER_TEXT_LENGTH = * - BAD_MENU_NUMBER_TEXT
 
 
@@ -84,6 +87,20 @@ CALLING_UPLOADED_CODE_TEXT
 	.BYTE 	EOL,"Calling uploaded code.", EOL		; inform user
 CALLING_UPLOADED_CODE_TEXT_LENGTH = * - CALLING_UPLOADED_CODE_TEXT
 
+CALLING_SUCCESS_TEXT
+	.BYTE 	EOL,"Calling SUCCESS routine.", EOL		; inform user
+CALLING_SUCCESS_TEXT_LENGTH = * - CALLING_SUCCESS_TEXT
+
+CALLING_FAIL_TEXT
+	.BYTE 	EOL,"Calling FAIL routine.", EOL		; inform user
+CALLING_FAIL_TEXT_LENGTH = * - CALLING_FAIL_TEXT
+
+FUNCTION_NOT_IMPLEMENTED_TEXT
+	.BYTE 	EOL, EOL
+	.BYTE +$80,"Function not implemented yet.", EOL		; inform user
+FUNCTION_NOT_IMPLEMENTED_TEXT_LENGTH = * - FUNCTION_NOT_IMPLEMENTED_TEXT
+
+
 
 ERROR_CALL_CODE_DIRECTLY_TEXT
 ;	.BYTE +$80,"Error"
@@ -118,7 +135,15 @@ ERROR_TURN_OFF_TRACK_BUFFERING_TEXT
 	.BYTE " Could not turn off track buffering.", EOL		; inform user
 ERROR_TURN_OFF_TRACK_BUFFERING_TEXT_LENGTH = * - ERROR_TURN_OFF_TRACK_BUFFERING_TEXT
 
+ERROR_CALL_SUCCESS_CODE_TEXT
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to call SUCCESS code.", EOL		; inform user
+ERROR_CALL_SUCCESS_CODE_TEXT_LENGTH = * - ERROR_CALL_SUCCESS_CODE_TEXT
 
+ERROR_CALL_FAIL_CODE_TEXT
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to call FAIL code.", EOL		; inform user
+ERROR_CALL_FAIL_CODE_TEXT_LENGTH = * - ERROR_CALL_FAIL_CODE_TEXT
 
 
 
