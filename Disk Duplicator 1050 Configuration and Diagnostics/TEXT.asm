@@ -14,7 +14,7 @@ WELCOME_TEXT
 	.BYTE "E474's DD 1050 Utility V. "
 VERSION_NUMBER
 	.BYTE "1.0",EOL
-	.BYTE "Copyright (c) E474 26 April, 2022",EOL
+	.BYTE "Copyright (c) E474 01 June, 2022",EOL
     .BYTE "<"
     .BYTE +$80,"SYSTEM RESET"						; inverse video - specific to ATASM?
     .BYTE "> to exit",EOL
@@ -31,11 +31,11 @@ BAD_DRIVE_NUMBER_TEXT_LENGTH = * - BAD_DRIVE_NUMBER_TEXT
 	
 MAIN_MENU_TEXT
 	.BYTE EOL,EOL
-	.BYTE "1) Call drive coldstart routine.",EOL,EOL
-	.BYTE "2) Upload and call coldstart routine.",EOL,EOL
-	.BYTE "3) Turn on track buffering.",EOL,EOL
-	.BYTE "4) Turn off track buffering.",EOL,EOL
-	.BYTE "5) Select a different drive.",EOL,EOL
+	.BYTE "1) Call drive coldstart routine.",EOL
+	.BYTE "2) Upload and call coldstart routine.",EOL
+	.BYTE "3) Turn on track buffering.",EOL
+	.BYTE "4) Turn off track buffering.",EOL
+	.BYTE "5) Select a different drive.",EOL
 
     .BYTE "Choose (1 - 5): "
 MAIN_MENU_TEXT_LENGTH = * - MAIN_MENU_TEXT
@@ -68,52 +68,54 @@ DRIVE_NUMBER
 
 
 CALLING_COLDSTART_DRIVE_TEXT
-	.BYTE 	EOL,EOL,"Calling drive coldstart routine.", EOL		; inform user
+	.BYTE 	EOL,"Calling drive coldstart routine.", EOL		; inform user
 CALLING_COLDSTART_DRIVE_TEXT_LENGTH = * - CALLING_COLDSTART_DRIVE_TEXT
 
 
 UPLOADING_COLDSTART_CODE_TEXT
-	.BYTE 	EOL,EOL,"Uploading coldstart routine.", EOL		; inform user
+	.BYTE 	EOL,"Uploading coldstart routine.", EOL		; inform user
 UPLOADING_COLDSTART_CODE_TEXT_LENGTH = * - UPLOADING_COLDSTART_CODE_TEXT
+
+SETTING_UPLOAD_CODE_ADDRESS_TEXT
+	.BYTE 	EOL,"Setting upload address.", EOL		; inform user
+SETTING_UPLOAD_CODE_ADDRESS_TEXT_LENGTH = * - SETTING_UPLOAD_CODE_ADDRESS_TEXT
+
+CALLING_UPLOADED_CODE_TEXT
+	.BYTE 	EOL,"Calling uploaded code.", EOL		; inform user
+CALLING_UPLOADED_CODE_TEXT_LENGTH = * - CALLING_UPLOADED_CODE_TEXT
 
 
 ERROR_CALL_CODE_DIRECTLY_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Failed to directly call coldstart code", EOL		; inform user
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to call coldstart routine.", EOL		; inform user
 ERROR_CALL_CODE_DIRECTLY_TEXT_LENGTH = * - ERROR_CALL_CODE_DIRECTLY_TEXT
 
 
 
-ERROR_SET_LOAD_ADDRESS_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Failed to set upload code address", EOL		; inform user
+ERROR_SET_LOAD_ADDRESS_TEXT 	
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to set upload code address.", EOL		; inform user
 ERROR_SET_LOAD_ADDRESS_TEXT_LENGTH = * - ERROR_SET_LOAD_ADDRESS_TEXT
 
 ERROR_UPLOAD_CODE_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Failed to upload code", EOL		; inform user
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to upload code.", EOL		; inform user
 ERROR_UPLOAD_CODE_TEXT_LENGTH = * - ERROR_UPLOAD_CODE_TEXT
 
 ERROR_CALL_UPLOADED_CODE_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Failed to call uploaded code", EOL		; inform user
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to call uploaded code.", EOL		; inform user
 ERROR_CALL_UPLOADED_CODE_TEXT_LENGTH = * - ERROR_CALL_UPLOADED_CODE_TEXT
 
 
 ERROR_TURN_ON_TRACK_BUFFERING_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Could not turn on track buffering", EOL		; inform user
+;	.BYTE +$80,"Error"
+	.BYTE " Could not turn on track buffering.", EOL		; inform user
 ERROR_TURN_ON_TRACK_BUFFERING_TEXT_LENGTH = * - ERROR_TURN_ON_TRACK_BUFFERING_TEXT
 
 ERROR_TURN_OFF_TRACK_BUFFERING_TEXT
-	.BYTE 	EOL,EOL
-	.BYTE +$80,"Error"
-	.BYTE EOL," Could not turn off track buffering", EOL		; inform user
+;	.BYTE +$80,"Error"
+	.BYTE " Could not turn off track buffering.", EOL		; inform user
 ERROR_TURN_OFF_TRACK_BUFFERING_TEXT_LENGTH = * - ERROR_TURN_OFF_TRACK_BUFFERING_TEXT
 
 
@@ -121,15 +123,17 @@ ERROR_TURN_OFF_TRACK_BUFFERING_TEXT_LENGTH = * - ERROR_TURN_OFF_TRACK_BUFFERING_
 
 
 SIO_ERROR_CODE_TEXT
-	.BYTE 	" SIO Error: " 		; inform user
+	.BYTE " "
+	.BYTE 	+$80,"SIO Error:" 		; inform userUPLOAD_COLDSTART_CODE_SUB
+	.BYTE " "
 SIO_ERROR_CODE_TEXT_LENGTH = * - SIO_ERROR_CODE_TEXT
 
 TURN_ON_BUFFERING_TEXT
-	.BYTE 	EOL,EOL,"Turning on buffering.", EOL		; inform user
+	.BYTE 	EOL,"Turning on buffering.", EOL		; inform user
 TURN_ON_BUFFERING_TEXT_LENGTH = * - TURN_ON_BUFFERING_TEXT
 
 TURN_OFF_BUFFERING_TEXT
-	.BYTE 	EOL,EOL,"Turning off buffering.", EOL		; inform user
+	.BYTE 	EOL,"Turning off buffering.", EOL		; inform user
 TURN_OFF_BUFFERING_TEXT_LENGTH = * - TURN_OFF_BUFFERING_TEXT
 
 
