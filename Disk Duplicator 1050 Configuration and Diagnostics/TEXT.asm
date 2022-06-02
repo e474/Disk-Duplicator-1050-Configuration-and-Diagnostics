@@ -14,7 +14,7 @@ WELCOME_TEXT
 	.BYTE "E474's DD 1050 Utility V. "
 VERSION_NUMBER
 	.BYTE "1.0",EOL
-	.BYTE "Copyright (c) E474 01 June, 2022",EOL
+	.BYTE "Copyright (c) E474 02 June, 2022",EOL
     .BYTE "<"
     .BYTE +$80,"SYSTEM RESET"						; inverse video - specific to ATASM?
     .BYTE "> to exit",EOL
@@ -35,8 +35,8 @@ MAIN_MENU_TEXT
 	.BYTE "2) Upload and call coldstart routine.",EOL
 	.BYTE "3) Turn on track buffering.",EOL
 	.BYTE "4) Turn off track buffering.",EOL
-	.BYTE "5) Call success code.",EOL
-	.BYTE "6) Call failure code.",EOL
+	.BYTE "5) Call Success code.",EOL
+	.BYTE "6) Call Failure code.",EOL
 	.BYTE "7) Step +5 tracks.",EOL
 	.BYTE "8) Select a different drive.",EOL
 
@@ -76,7 +76,7 @@ CALLING_COLDSTART_DRIVE_TEXT_LENGTH = * - CALLING_COLDSTART_DRIVE_TEXT
 
 
 UPLOADING_COLDSTART_CODE_TEXT
-	.BYTE 	EOL,"Uploading coldstart routine.", EOL		; inform user
+	.BYTE 	EOL,"Uploading code to drive.", EOL		; inform user
 UPLOADING_COLDSTART_CODE_TEXT_LENGTH = * - UPLOADING_COLDSTART_CODE_TEXT
 
 SETTING_UPLOAD_CODE_ADDRESS_TEXT
@@ -88,12 +88,18 @@ CALLING_UPLOADED_CODE_TEXT
 CALLING_UPLOADED_CODE_TEXT_LENGTH = * - CALLING_UPLOADED_CODE_TEXT
 
 CALLING_SUCCESS_TEXT
-	.BYTE 	EOL,"Calling SUCCESS routine.", EOL		; inform user
+	.BYTE 	EOL,"Calling Success routine.", EOL		; inform user
 CALLING_SUCCESS_TEXT_LENGTH = * - CALLING_SUCCESS_TEXT
 
 CALLING_FAIL_TEXT
-	.BYTE 	EOL,"Calling FAIL routine.", EOL		; inform user
+	.BYTE 	EOL,"Calling Fail routine.", EOL		; inform user
 CALLING_FAIL_TEXT_LENGTH = * - CALLING_FAIL_TEXT
+
+CALLING_STEP5_TEXT
+	.BYTE 	EOL,"Calling Step5 routine.", EOL		; inform user
+CALLING_STEP5_TEXT_LENGTH = * - CALLING_STEP5_TEXT
+
+
 
 FUNCTION_NOT_IMPLEMENTED_TEXT
 	.BYTE 	EOL, EOL
@@ -137,13 +143,18 @@ ERROR_TURN_OFF_TRACK_BUFFERING_TEXT_LENGTH = * - ERROR_TURN_OFF_TRACK_BUFFERING_
 
 ERROR_CALL_SUCCESS_CODE_TEXT
 ;	.BYTE +$80,"Error"
-	.BYTE " Failed to call SUCCESS code.", EOL		; inform user
+	.BYTE " Failed to call Success code.", EOL		; inform user
 ERROR_CALL_SUCCESS_CODE_TEXT_LENGTH = * - ERROR_CALL_SUCCESS_CODE_TEXT
 
 ERROR_CALL_FAIL_CODE_TEXT
 ;	.BYTE +$80,"Error"
-	.BYTE " Failed to call FAIL code.", EOL		; inform user
+	.BYTE " Failed to call Fail code.", EOL		; inform user
 ERROR_CALL_FAIL_CODE_TEXT_LENGTH = * - ERROR_CALL_FAIL_CODE_TEXT
+
+ERROR_CALL_STEP5_CODE_TEXT
+;	.BYTE +$80,"Error"
+	.BYTE " Failed to call Step5 code.", EOL		; inform user
+ERROR_CALL_STEP5_CODE_TEXT_LENGTH = * - ERROR_CALL_STEP5_CODE_TEXT
 
 
 

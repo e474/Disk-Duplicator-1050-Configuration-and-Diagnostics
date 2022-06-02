@@ -14,6 +14,13 @@
 	.INCLUDE "OS.asm"
 
 ;
+; Disk Duplicator 1050 Firmware jump vectors
+;
+
+	.INCLUDE "DDF_EQU.ASM"
+
+
+;
 ; Equates for sizes, buffers and variables
 ;
 
@@ -24,21 +31,73 @@ SIO_READ_DATA			= $40
 SIO_WRITE_DATA			= $80
 SIO_NO_DATA				= $00
 
-DD_COLD_START_CODE = [[COLD_START_CODE - COMMAND_CODE_BUFFER] + $2000] -1
-DD_RETURN_SUCCESS_CODE = [[RETURN_SUCCESS_CODE - COMMAND_CODE_BUFFER] + $2000] -1
-DD_RETURN_FAIL_CODE = [[RETURN_FAIL_CODE - COMMAND_CODE_BUFFER] + $2000] -1
+DD_FIRMWARE_COLDSTART = [$E000] - 1
 
+NTRK	=	$0A
 
 ;
 ; Start of actual program area
 ;
 									
 	*= $2000
-	JMP PROGRAM_INIT				; Jump over Strings defined at start of
-									; program (stops some assemblers complaining)
+
+COMMAND_CODE_BUFFER
+
+DD_COLD_START_CODE
+
+	JMP $E000
+	
+DD_RETURN_SUCCESS_CODE
+
+	LDA #0
+	STA $A0
+	RTS	
+	
+DD_RETURN_FAIL_CODE
+
 ;
-; MAC65 Macro files. Mainly used for I/O Macros
+; returns SIO error code 144
 ;
+; From https://www.page6.org/archive/issue_22/page_10.htm
+; 
+; Error-144 Device done error.
+;
+; This error occurs when you have issued a valid command to the peripheral but the device is unable to carry it out. For example, 
+; you may have tried to write to a disk that is write-protected, or there may be no disk at all in the drive. 'Your Atari Computer' 
+; implies that this error might also occur if the disk directory was damaged in some way.
+;
+;The cause of the error depends on the device, so check the command given and whether the device is prevented in some way from executing it.
+;
+
+	LDA #2
+	STA $A0
+	RTS	
+
+
+DD_STEP_5_TRACKS
+
+	LDA #5
+	JSR SEEK_TO_TRACK
+	LDA #6
+	JSR SEEK_TO_TRACK
+	LDA #7
+	JSR SEEK_TO_TRACK
+	LDA #8
+	JSR SEEK_TO_TRACK
+	LDA #9
+	JSR SEEK_TO_TRACK
+	LDA #10
+	JSR SEEK_TO_TRACK
+
+	JMP DD_RETURN_SUCCESS_CODE
+
+SEEK_TO_TRACK
+
+	STA NTRK
+	JSR SKTKV
+	RTS
+
+
 
 	.INCLUDE "SYSEQU.M65"
 	.INCLUDE "IOMAC.LIB"
@@ -185,7 +244,13 @@ CALL_FAILURE_CODE
 	JMP DISPLAY_MAIN_MENU
 
 STEP_5_TRACKS
-		BPUT 0, FUNCTION_NOT_IMPLEMENTED_TEXT,FUNCTION_NOT_IMPLEMENTED_TEXT_LENGTH
+
+	JSR UPLOAD_COLDSTART_CODE_SUB
+	JSR UPLOAD_CODE
+	JSR CALL_STEP5_SUB
+	
+
+	; BPUT 0, FUNCTION_NOT_IMPLEMENTED_TEXT,FUNCTION_NOT_IMPLEMENTED_TEXT_LENGTH
 
 	JMP DISPLAY_MAIN_MENU
 
@@ -197,13 +262,12 @@ STEP_5_TRACKS
 
 CALL_DRIVE_COLDSTART_ROUTINE_DIRECTLY_SUB	 
 
-		BPUT 0, CALLING_COLDSTART_DRIVE_TEXT,CALLING_COLDSTART_DRIVE_TEXT_LENGTH
+	BPUT 0, CALLING_COLDSTART_DRIVE_TEXT,CALLING_COLDSTART_DRIVE_TEXT_LENGTH
 	
 	
-	LDA	#< DD_COLD_START_CODE
-;	$FF		; COLDSTART - 1
+	LDA	#< DD_FIRMWARE_COLDSTART
 	STA	DAUX1	
-	LDA	#> DD_COLD_START_CODE		
+	LDA	#> DD_FIRMWARE_COLDSTART		
 	STA DAUX2
 	LDA #'r							
 	STA DCOMND
@@ -242,7 +306,7 @@ ERROR_CALL_DRIVE_COLDSTART_ROUTINE_DIRECTLY
 	
 	RTS
 
-
+ 
     
 UPLOAD_COLDSTART_CODE_SUB
 
@@ -357,9 +421,9 @@ CALL_UPLOADED_CODE
 
 
 
-	LDA	#< DD_COLD_START_CODE ; COLDSTART - 1
+	LDA	#< [DD_COLD_START_CODE - 1] ; COLDSTART - 1
 	STA	DAUX1	
-	LDA	#> DD_COLD_START_CODE
+	LDA	#> [DD_COLD_START_CODE - 1]
 	STA DAUX2
 	LDA #'r							
 	STA DCOMND
@@ -509,9 +573,9 @@ CALL_RETURN_SUCCESS_SUB
 	BPUT 0, CALLING_SUCCESS_TEXT,CALLING_SUCCESS_TEXT_LENGTH
 	
 	
-	LDA	#< DD_RETURN_SUCCESS_CODE
+	LDA	#< [DD_RETURN_SUCCESS_CODE - 1]
 	STA	DAUX1	
-	LDA	#> DD_RETURN_SUCCESS_CODE		
+	LDA	#> [DD_RETURN_SUCCESS_CODE - 1]		
 	STA DAUX2
 	LDA #'r							
 	STA DCOMND
@@ -555,9 +619,9 @@ CALL_RETURN_FAIL_SUB
 	BPUT 0, CALLING_FAIL_TEXT,CALLING_FAIL_TEXT_LENGTH
 	
 	
-	LDA	#< DD_RETURN_FAIL_CODE
+	LDA	#< [DD_RETURN_FAIL_CODE - 1]
 	STA	DAUX1	
-	LDA	#> DD_RETURN_FAIL_CODE		
+	LDA	#> [DD_RETURN_FAIL_CODE - 1]		
 	STA DAUX2
 	LDA #'r							
 	STA DCOMND
@@ -595,8 +659,54 @@ ERROR_CALL_RETURN_FAIL_DIRECTLY
 	JSR PRINT_SIO_ERROR_CODE
 	
 	RTS
+ 
+CALL_STEP5_SUB
 
+	BPUT 0, CALLING_STEP5_TEXT,CALLING_STEP5_TEXT_LENGTH
+	
+	
+	LDA	#< [DD_STEP_5_TRACKS - 1]
+	STA	DAUX1	
+	LDA	#> [DD_STEP_5_TRACKS - 1]		
+	STA DAUX2
+	LDA #'r							
+	STA DCOMND
+	
+	LDA #SIO_NO_DATA
+	STA DSTATS
+	
+	LDA #$31						; SIO code for disk drive
+	STA DDEVIC
+	
+	LDA DRIVE_NUMBER
+	STA DUNIT
+	
+	LDA #$20						; longer timeout due to moving drive head
+	STA DTIMLO
+	
+	LDA #$80
+	STA DBYTLO
+	LDA #0
+	STA DBYTHI
+	
+    JSR	SIOV
+    
+    BMI	ERROR_CALL_STEP5_DIRECTLY
+    
+    RTS
 
+ERROR_CALL_STEP5_DIRECTLY
+
+	LDA DSTATS
+	STA BIN_VAL
+ 
+     BPUT 0, ERROR_CALL_STEP5_CODE_TEXT, ERROR_CALL_STEP5_CODE_TEXT_LENGTH
+
+	JSR PRINT_SIO_ERROR_CODE
+	
+	RTS
+
+ 
 
 ;
 ;
@@ -650,24 +760,6 @@ PRINT_SIO_ERROR_CODE
 ;
 ;
 ;
-COMMAND_CODE_BUFFER
-
-COLD_START_CODE
-
-	JMP $E000
-	
-RETURN_SUCCESS_CODE
-
-	LDA #0
-	STA $A0
-	RTS	
-	
-RETURN_FAIL_CODE
-
-	LDA #2
-	STA $A0
-	RTS	
-
 
 ;
 	
