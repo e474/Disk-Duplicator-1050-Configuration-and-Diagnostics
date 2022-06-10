@@ -39,7 +39,7 @@ NTRK	=	$0A
 ; Start of actual program area
 ;
 									
-	*= $2000
+	*= $3F00
 
 COMMAND_CODE_BUFFER
 
@@ -76,6 +76,14 @@ DD_RETURN_FAIL_CODE
 
 DD_STEP_5_TRACKS
 
+
+
+	; move to track zero, then move to track 5, then tracks 6, 7, 8, 9, 10
+
+	JSR TRK0V
+	
+	
+
 	LDA #5
 	JSR SEEK_TO_TRACK
 	LDA #6
@@ -89,9 +97,13 @@ DD_STEP_5_TRACKS
 	LDA #10
 	JSR SEEK_TO_TRACK
 
-	JMP DD_RETURN_SUCCESS_CODE
+	LDA #0
+	STA $A0
+	RTS	
 
 SEEK_TO_TRACK
+
+; relies on TRACK being set, which is maybe contained in the command frame?
 
 	STA NTRK
 	JSR SKTKV
@@ -316,9 +328,9 @@ UPLOAD_COLDSTART_CODE_SUB
 ; set load address to $2000 on the drive first	
 ;
 	
-	LDA	#0
+	LDA	#< COMMAND_CODE_BUFFER
 	STA	DAUX1	
-	LDA	#$20
+	LDA	#> COMMAND_CODE_BUFFER
 	STA DAUX2
 	LDA #'s							
 	STA DCOMND
